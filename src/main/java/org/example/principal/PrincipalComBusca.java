@@ -3,9 +3,11 @@ package org.example.principal;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.example.excecao.ErroDeConversaoDeAnoException;
 import org.example.modelos.Titulo;
 import org.example.modelos.TituloOmdb;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -39,8 +41,20 @@ public class PrincipalComBusca {
         TituloOmdb meuTituloOmdb = gson.fromJson(json, TituloOmdb.class);
         System.out.println(meuTituloOmdb.toString());
 
-        Titulo meuTitulo = new Titulo(meuTituloOmdb);
-        System.out.println("Meu título já convertido");
-        System.out.println(meuTitulo);
+        try {
+            Titulo meuTitulo = new Titulo(meuTituloOmdb);
+            System.out.println("Meu título já convertido");
+            System.out.println(meuTitulo);
+
+            FileWriter escrita = new FileWriter("filmes.txt");
+            escrita.write(meuTitulo.toString());
+            escrita.close();
+        } catch (NumberFormatException e) {
+            System.out.println("Erro ao converter o título");
+            System.out.println(e.getMessage());
+        }
+        catch (ErroDeConversaoDeAnoException e){
+            System.out.println(e.getMessage());
+        }
     }
 }
